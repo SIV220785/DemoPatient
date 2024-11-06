@@ -1,41 +1,80 @@
-﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Patient.DAL.Interfaces;
 
 namespace Patient.DAL.Repository;
 
-public class GenericRepository<TEntity>(DbContext context) : IGenericRepository<TEntity>
-    where TEntity : class
+public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
 {
-    private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
+    private readonly DbContext _context;
+    private readonly DbSet<TEntity> _dbSet;
 
-    public TEntity GetById(object id)
+    public GenericRepository(DbContext context)
     {
-        return _dbSet.Find(id);
+        ArgumentNullException.ThrowIfNull(context);
+
+        _context = context;
+        _dbSet = context.Set<TEntity>();
     }
 
-    public IEnumerable<TEntity> GetAll()
+    public IQueryable<TEntity> GetAll()
     {
-        return _dbSet.ToList();
+        return _dbSet;
     }
 
-    public void Add(TEntity entity)
+    public IQueryable<TEntity> Include(Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include)
     {
-        _dbSet.Add(entity);
+        return include(_dbSet);
     }
+
+    public TEntity GetById(object id) => _dbSet.Find(id);
+
+    public async Task<TEntity> GetByIdAsync(object id) => await _dbSet.FindAsync(id);
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync() => await _dbSet.ToListAsync();
+
+    public void Add(TEntity entity) => _dbSet.Add(entity);
+
+    public async Task AddAsync(TEntity entity) => await _dbSet.AddAsync(entity);
 
     public void Delete(TEntity entity)
     {
-        if (context.Entry(entity).State == EntityState.Detached)
-        {
-            _dbSet.Attach(entity);
-        }
+        ArgumentNullException.ThrowIfNull(entity);
 
+        AttachIfDetached(entity);
         _dbSet.Remove(entity);
+    }
+
+    public Task DeleteAsync(TEntity entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+
+        Delete(entity);
+        return Task.CompletedTask;
     }
 
     public void Update(TEntity entity)
     {
-        _dbSet.Attach(entity);
-        context.Entry(entity).State = EntityState.Modified;
+        ArgumentNullException.ThrowIfNull(entity);
+
+        AttachIfDetached(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+    }
+
+    public Task UpdateAsync(TEntity entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+
+        Update(entity);
+        return Task.CompletedTask;
+    }
+
+    private void AttachIfDetached(TEntity entity)
+    {
+        if (_context.Entry(entity).State == EntityState.Detached)
+        {
+            _dbSet.Attach(entity);
+        }
     }
 }

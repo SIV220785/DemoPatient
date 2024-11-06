@@ -1,16 +1,20 @@
-﻿using Patient.DAL.Entities;
+using Patient.DAL.Entities;
 
 namespace Patient.DAL.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    IGenericRepository<Entities.Patient> Patients { get; }
+    IGenericRepository<PatientProfile> PatientProfiles { get; }
 
-    IGenericRepository<Name> Names { get; }
+    IGenericRepository<PatientDetail> PatientDetails { get; }
 
     IGenericRepository<Gender> Genders { get; }
 
     IGenericRepository<Active> Actives { get; }
 
+    IGenericRepository<Given> Givens { get; }
+
     int Complete();
+
+    Task<int> CompleteAsync();
 }

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patient.BLL", "Patient.BLL\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patient.DAL", "Patient.DAL\Patient.DAL.csproj", "{A3792662-28E5-40D3-A922-A6979CA451E5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patient.BLL.Tests", "Patient.BLL.Tests\Patient.BLL.Tests.csproj", "{04426BAA-594A-486E-BB50-95213A7BD9F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patient.ConsoleApp", "Patient.ConsoleApp\Patient.ConsoleApp.csproj", "{A13FF774-3592-4E45-B4B5-4291C38BD81D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{A3792662-28E5-40D3-A922-A6979CA451E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3792662-28E5-40D3-A922-A6979CA451E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3792662-28E5-40D3-A922-A6979CA451E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04426BAA-594A-486E-BB50-95213A7BD9F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04426BAA-594A-486E-BB50-95213A7BD9F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04426BAA-594A-486E-BB50-95213A7BD9F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04426BAA-594A-486E-BB50-95213A7BD9F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A13FF774-3592-4E45-B4B5-4291C38BD81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A13FF774-3592-4E45-B4B5-4291C38BD81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A13FF774-3592-4E45-B4B5-4291C38BD81D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A13FF774-3592-4E45-B4B5-4291C38BD81D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

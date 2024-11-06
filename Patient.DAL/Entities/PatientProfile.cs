@@ -1,22 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.VisualBasic;
 
 namespace Patient.DAL.Entities;
 
-public class Patient
+public class PatientProfile
 {
     [Key]
     public int Id { get; set; }
 
     [Required]
     [Column(TypeName = "date")]
-    public DateTime BirthDate { get; set; }
+    public DateTime RecordDate { get; set; }
 
     [Required]
-    [ForeignKey("Name")]
-    public Guid NameId { get; set; }
-    public Name Name { get; set; }
-    
+    [ForeignKey("PatientDetail")]
+    public Guid PatientDetailId { get; set; }
+    public PatientDetail PatientDetail { get; set; }
 
     [ForeignKey("Gender")]
     public int GenderId { get; set; }
@@ -24,5 +24,6 @@ public class Patient
 
     [ForeignKey("Active")]
     public int ActiveId { get; set; }
+
     public Active Active { get; set; }
 }
