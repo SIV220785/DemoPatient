@@ -1,10 +1,25 @@
 version: '3.8'
 services:
-  patient-api:
+  api:
     build:
-      context: .
       dockerfile: Dockerfile
-    ports:
-      - "5000:80"
+    image: demopatient
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver2022;Database=MyPatientDb;User Id=sa;Password=XXXXX;
+    depends_on:
+      - sql-server
+    networks:
+      - backend
+  sql-server:
+    container_name: sqlserver2022
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "XXXXX"
+      ACCEPT_EULA: "Y"
+    networks:
+      - backend
+    ports:
+      - "1433:1433"
+networks:
+  backend:
+    driver: bridge
