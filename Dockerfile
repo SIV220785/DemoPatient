@@ -2,31 +2,23 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Копируем файлы решения и всех проектов
-COPY *.sln ./
-COPY Patient.API/*.csproj ./Patient.API/
-COPY Patient.BLL/*.csproj ./Patient.BLL/
-COPY Patient.DAL/*.csproj ./Patient.DAL/
-COPY Patient.BLL.Tests/*.csproj ./Patient.BLL.Tests/
-COPY Patient.ConsoleApp/*.csproj ./Patient.ConsoleApp/
+# Копируем все файлы проекта. Предполагается, что .dockerignore настроен должным образом.
+COPY . .
 
-# Восстановление всех зависимостей
-RUN dotnet restore
-
-# Копирование всех остальных файлов
-COPY Patient.API/ ./Patient.API/
-COPY Patient.BLL/ ./Patient.BLL/
-COPY Patient.DAL/ ./Patient.DAL/
-COPY Patient.BLL.Tests/*.csproj ./Patient.BLL.Tests/
-COPY Patient.ConsoleApp/*.csproj ./Patient.ConsoleApp/
-
-# Собираем и публикуем проект
-RUN dotnet publish Patient.API/Patient.API.csproj -c Release -o out
+# Восстановление всех зависимостей и сборка проекта
+RUN dotnet restore \
+    && dotnet publish Patient.API/Patient.API.csproj -c Release -o out
 
 # Готовим финальный образ на основе runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build-env /app/out ./
-EXPOSE 80
 
+# Копируем файлы сборки из промежуточного слоя
+COPY --from=build-env /app/out .
+
+# Открываем порты 80 и 443 для HTTP и HTTPS соответственно
+EXPOSE 80
+EXPOSE 443
+
+# Задаем точку входа для запуска приложения
 ENTRYPOINT ["dotnet", "Patient.API.dll"]

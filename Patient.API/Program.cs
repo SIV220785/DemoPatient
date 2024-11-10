@@ -15,6 +15,22 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
+        // Configure Services
+        ConfigureServices(builder);
+
+        var app = builder.Build();
+
+        // Configure Middleware and Web Application pipeline
+        ConfigureMiddleware(app);
+
+        app.Run();
+    }
+
+    private static void ConfigureServices(WebApplicationBuilder builder)
+    {
+        builder.Services.AddLogging();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -26,7 +42,7 @@ public static class Program
                 Description = "API for managing patient data",
                 Contact = new OpenApiContact
                 {
-                    Name = "Name",
+                    Name = "Your Name",
                     Email = "email@example.com",
                     Url = new Uri("https://example.com/")
                 }
@@ -40,11 +56,14 @@ public static class Program
         builder.Services.AddDatabaseAndUnitOfWorkServices(builder.Configuration);
         builder.Services.AddAutoMapper(typeof(MappingProfile));
         builder.Services.AddScoped<IPatientService, PatientService>();
+    }
 
-        var app = builder.Build();
-
+    private static void ConfigureMiddleware(WebApplication app)
+    {
+        // Ensuring database is initialized
         ServiceExtensions.InitializeDatabase(app);
 
+        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -53,12 +72,15 @@ public static class Program
 
         app.UseHttpsRedirection();
 
-        app.UseMiddleware<ErrorHandlingMiddleware>();
+        app.UseRouting();  // Ensure UseRouting() is called before UseAuthorization()
 
         app.UseAuthorization();
 
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+
         app.MapControllers();
 
-        app.Run();
+        // Set URLs here
+        app.Urls.Add("http://*:80");
     }
 }

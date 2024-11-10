@@ -9,7 +9,7 @@ namespace Patient.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class PatientsController(IPatientService patientService) : ControllerBase
+public class PatientsController(IPatientService patientService, ILogger<PatientsController> logger) : ControllerBase
 {
     /// <summary>
     /// Retrieve all registered patients.
@@ -25,10 +25,12 @@ public class PatientsController(IPatientService patientService) : ControllerBase
         try
         {
             var patients = await patientService.GetAllPatientsAsync();
+            logger.LogInformation("Number of patients retrieved: {PatientCount}", patients.Count());
             return Ok(patients);
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Failed to retrieve all patients.");
             return StatusCode(500, $"Failed to retrieve all patients: {ex.Message}");
         }
     }

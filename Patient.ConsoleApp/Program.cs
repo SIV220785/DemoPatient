@@ -11,7 +11,8 @@ class Program
 
     private static async Task Main()
     {
-        var baseUri = "http://localhost:5116/api/patients";
+        var baseUri = "http://localhost:5000/api/patients";
+        //var baseUri2 = "http://localhost:5000/api/patients";
 
         var patientGenerator = new Faker<PatientProfileDto>()
             .RuleFor(p => p.PatientDetail, f => new PatientDetailsDto

@@ -14,5 +14,19 @@ public class PatientDetail
     public string Family { get; set; }
 
     [InverseProperty("PatientDetail")]
-    public ICollection<Given> Givens { get; set; } = new HashSet<Given>();
+    public ICollection<Given> Givens { get; } = new HashSet<Given>();
+
+    public void ClearGivens()
+    {
+        Givens.Clear();
+    }
+
+    public void ReplaceGivens(IEnumerable<Given> newGivens)
+    {
+        Givens.Clear();
+        foreach (var given in newGivens)
+        {
+            Givens.Add(given);
+        }
+    }
 }

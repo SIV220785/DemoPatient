@@ -1,25 +1,36 @@
-version: '3.8'
 services:
   api:
     build:
+      context: .
       dockerfile: Dockerfile
     image: demopatient
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver2022;Database=MyPatientDb;User Id=sa;Password=XXXXX;
+      ConnectionStrings__DefaultConnection: "Server=sql-server;Database=MyPatientDb;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true"
+      ASPNETCORE_URLS: "http://+:80"
     depends_on:
       - sql-server
     networks:
       - backend
+    ports:
+      - "5000:80"
+      
   sql-server:
-    container_name: sqlserver2022
+    container_name: sqlserver2022ac
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "XXXXX"
+      SA_PASSWORD: "${SA_PASSWORD}"
       ACCEPT_EULA: "Y"
     networks:
       - backend
     ports:
       - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
 networks:
   backend:
     driver: bridge
+
+volumes:
+  sql_data:
+    driver: local

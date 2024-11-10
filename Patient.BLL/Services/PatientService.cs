@@ -160,7 +160,11 @@ namespace Patient.BLL.Services
                         .Select(group => group.First())
                         .ToList();
 
-                    patientProfile.PatientDetail.Givens = uniqueGivens;
+                    patientProfile.PatientDetail.Givens.Clear();
+                    foreach (var given in uniqueGivens)
+                    {
+                        patientProfile.PatientDetail.Givens.Add(given);
+                    }
                 }
             }
 
