@@ -40,7 +40,6 @@ public static class ServiceExtensions
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
 
-        var logger = host.Services.GetRequiredService<ILogger>();
         var context = services.GetRequiredService<PatientDbContext>();
 
         try
@@ -52,18 +51,13 @@ public static class ServiceExtensions
                     context.Database.EnsureCreated();
                 }
                 catch (Microsoft.Data.SqlClient.SqlException ex) when (ex.Number == 1801)
-                {      
-                    logger.LogInformation("Database already exists, no action required.");
-                }
+                { }
             }
             else
-            {
-                logger.LogInformation("Connection to the database successful.");
-            }
+            { }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error during database initialization");
             throw new InvalidOperationException("Ошибка при инициализации базы данных", ex);
         }
     }
